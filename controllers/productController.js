@@ -52,14 +52,37 @@ export const productList = async (req, res, next) => {
   try {
     const products = await Product.find();
 
-    if (!products || products.length === 0) 
+    if (!products || products.length === 0)
       throw new CustomError("No products found", 404);
-    
 
     res.status(200).json({
       success: true,
       message: "Products fetched successfully",
       products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// Get single product by Id
+export const getProductById = async (req, res, next) => {
+  const { productId } = req.body;
+
+  try {
+    if (!productId) {
+      throw new CustomError("Product ID is required", 400);
+    }
+// Find the product using id
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      throw new CustomError("Product not found", 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Product fetched successfully",
+      product,
     });
   } catch (error) {
     next(error);
