@@ -16,15 +16,11 @@ const server = express();
 server.use(express.json());
 server.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5173/",
     credentials: true,
   })
 );
 server.use(cookieParser()); // Cookie parser
-
-server.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
 
 
 // Api router
