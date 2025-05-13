@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDb } from "./configs/datebase.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 const PORT = process.env.PORT || 9000;
 
@@ -19,6 +20,9 @@ server.use(
   })
 );
 server.use(cookieParser()); // Cookie parser
+
+
+server.use(errorHandler);
 
 // Start the server after database connection
 connectDb()
