@@ -44,3 +44,30 @@ console.log(`Server is running on port ${PORT}`);
 console.error("Error connecting to MongoDB:", error);
 });
 
+### Model
+
+**auth model**
+--_ fullName, email, phone, password, profilePicture, role
+**product model**
+--_ name, price, description, category, image
+
+### Controller
+
+**auth controller
+--*register, login, logout
+
+### Route
+
+**auth router
+--*register, login, logout
+
+### Middlewares
+
+**error handling
+-- For handle error middleware
+**multer
+-- For handle file uploads
+
+### Config
+
+### Utils
