@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import CustomError from "../utils/customError.js";
 import { generateUserToken } from "../utils/token.js";
 
+// Signup user
 export const registerUser = async (req, res, next) => {
   const { fullName, email, phone, password, confirmPassword, profilePicture } = req.body;
 
@@ -27,7 +28,7 @@ export const registerUser = async (req, res, next) => {
     const newUser = new User({
       fullName,
       email,
-      password,
+      password: hashedPassword,
       phone,
       profilePicture,
     });
@@ -50,6 +51,52 @@ export const registerUser = async (req, res, next) => {
       success: true,
       message: "User registered successfully",
       user: newUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// Login user
+export const loginUser = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if email and password provided
+    if (!email || !password) {
+      throw new CustomError('Email and password are required', 400);
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new CustomError('Invalid email or password', 401);
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw new CustomError('Invalid email or password', 401);
+    }
+
+    // Generate JWT token
+    const token = generateUserToken({
+      _id: user._id,
+      email: user.email,
+      role: 'user',
+    });
+
+    // Set token in cookie
+    res.cookie('userToken', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+    });
+
+    // Send success response
+    res.status(200).json({
+      success: true,
+      message: 'Logged in successfully',
+      user,
     });
   } catch (error) {
     next(error);
