@@ -22,6 +22,11 @@ server.use(
 );
 server.use(cookieParser()); // Cookie parser
 
+server.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
+
+
 // Api router
 server.use("/api", apiRouter)
 
