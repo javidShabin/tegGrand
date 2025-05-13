@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import CustomError from "../utils/customError";
+import CustomError from "../utils/customError.js";
 export const userAuth = (req, res, next) => {
   try {
     // Get token from cookies

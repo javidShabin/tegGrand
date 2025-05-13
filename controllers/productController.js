@@ -41,7 +41,7 @@ export const createProduct = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Product created successfully",
-      product: newProduct,
+      newProduct
     });
   } catch (error) {
     next(error);
