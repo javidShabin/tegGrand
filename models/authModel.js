@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    profilePicture: {
+      type: String,
+      required: true,
+    },
     role: {
       type: String,
     },
