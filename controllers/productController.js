@@ -102,7 +102,9 @@ export const updateProductById = async (req, res, next) => {
 
     if (req.file) {
       try {
-        const uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);
+        const uploadResult = await cloudinaryInstance.uploader.upload(
+          req.file.path
+        );
         updatedData.image = uploadResult.secure_url;
       } catch (uploadError) {
         return res.status(500).json({
@@ -113,10 +115,14 @@ export const updateProductById = async (req, res, next) => {
       }
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(productId, updatedData, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!updatedProduct) {
       throw new CustomError("Product not found", 404);
@@ -126,6 +132,30 @@ export const updateProductById = async (req, res, next) => {
       success: true,
       message: "Product updated successfully",
       product: updatedProduct,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// Delete product by id
+export const deleteProductById = async (req, res, next) => {
+  const { productId } = req.params;
+
+  try {
+    if (!productId) {
+      throw new CustomError("Product ID is required", 400);
+    }
+
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      throw new CustomError("Product not found", 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+      product: deletedProduct,
     });
   } catch (error) {
     next(error);
