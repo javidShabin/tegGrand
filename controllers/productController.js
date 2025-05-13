@@ -7,9 +7,14 @@ export const createProduct = async (req, res, next) => {
 
   try {
     // Validate fields
-    if (!name || !price || !description || !category) {
+    if (!name || !price || !description || !category)
       throw new CustomError("All fields including image are required", 400);
-    }
+
+    // Check the product already exist in database
+    const isProductExist = await Product.findOne({name})
+    if (isProductExist)
+        throw new CustomError("The product is already exists") 
+
 
     // Upload image
     let uploadResult;
