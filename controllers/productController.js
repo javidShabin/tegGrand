@@ -66,7 +66,7 @@ export const productList = async (req, res, next) => {
 };
 // Get single product by Id
 export const getProductById = async (req, res, next) => {
-  const { productId } = req.body;
+  const { productId } = req.params;
 
   try {
     if (!productId) {
