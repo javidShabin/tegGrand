@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDb } from "./configs/datebase.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import apiRouter from "./routes/api.js";
 
 const PORT = process.env.PORT || 9000;
 
@@ -20,6 +21,9 @@ server.use(
   })
 );
 server.use(cookieParser()); // Cookie parser
+
+// Api router
+server.use("/api", apiRouter)
 
 
 server.use(errorHandler);
