@@ -72,7 +72,7 @@ export const getProductById = async (req, res, next) => {
     if (!productId) {
       throw new CustomError("Product ID is required", 400);
     }
-// Find the product using id
+    // Find the product using id
     const product = await Product.findById(productId);
 
     if (!product) {
@@ -83,6 +83,49 @@ export const getProductById = async (req, res, next) => {
       success: true,
       message: "Product fetched successfully",
       product,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// Update product by id
+export const updateProductById = async (req, res, next) => {
+  const { productId } = req.params;
+  const { name, price, description, category } = req.body;
+
+  try {
+    if (!productId) {
+      throw new CustomError("Product ID is required", 400);
+    }
+
+    const updatedData = { name, price, description, category };
+
+    if (req.file) {
+      try {
+        const uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);
+        updatedData.image = uploadResult.secure_url;
+      } catch (uploadError) {
+        return res.status(500).json({
+          success: false,
+          message: "Image upload failed",
+          error: uploadError.message,
+        });
+      }
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(productId, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedProduct) {
+      throw new CustomError("Product not found", 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      product: updatedProduct,
     });
   } catch (error) {
     next(error);
