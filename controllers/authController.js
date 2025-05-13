@@ -6,7 +6,8 @@ import { generateUserToken } from "../utils/token.js";
 
 // Signup user
 export const registerUser = async (req, res, next) => {
-  const { fullName, email, phone, password, confirmPassword, profilePicture } = req.body;
+  const { fullName, email, phone, password, confirmPassword, profilePicture } =
+    req.body;
 
   try {
     // Check the required fields are present or not
@@ -63,39 +64,39 @@ export const loginUser = async (req, res, next) => {
   try {
     // Check if email and password provided
     if (!email || !password) {
-      throw new CustomError('Email and password are required', 400);
+      throw new CustomError("Email and password are required", 400);
     }
 
     // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      throw new CustomError('Invalid email or password', 401);
+      throw new CustomError("Invalid email or password", 401);
     }
 
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new CustomError('Invalid email or password', 401);
+      throw new CustomError("Invalid email or password", 401);
     }
 
     // Generate JWT token
     const token = generateUserToken({
       _id: user._id,
       email: user.email,
-      role: 'user',
+      role: "user",
     });
 
     // Set token in cookie
-    res.cookie('userToken', token, {
+    res.cookie("userToken", token, {
       httpOnly: true,
       secure: false,
-      sameSite: 'strict',
+      sameSite: "strict",
     });
 
     // Send success response
     res.status(200).json({
       success: true,
-      message: 'Logged in successfully',
+      message: "Logged in successfully",
       user,
     });
   } catch (error) {
@@ -105,11 +106,30 @@ export const loginUser = async (req, res, next) => {
 // Logout user
 export const logoutUser = async (req, res, next) => {
   try {
-    res.clearCookie('userToken'); // Clear the cookie
+    res.clearCookie("userToken"); // Clear the cookie
 
     res.status(200).json({
       success: true,
-      message: 'Logged out successfully',
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// Check user function
+export const checkUser = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+ // Check user autherised or ot
+    if (!user) {
+      throw new CustomError("User not authorized", 401);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User is authorized",
+      user,
     });
   } catch (error) {
     next(error);
